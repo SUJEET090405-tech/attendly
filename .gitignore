@@ -4,3 +4,4 @@ data/*.sqlite-wal
 node_modules/
 .env
 dist/
+.vercel
