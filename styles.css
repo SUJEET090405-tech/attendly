@@ -65,6 +65,9 @@ button { cursor: pointer; }
 .login-card { width: min(100%, 430px); }
 .login-card h2 { margin: 0 0 8px; font: 800 29px Manrope, sans-serif; letter-spacing: -.8px; }
 .login-subtitle { margin: 0 0 30px; color: var(--muted); font-size: 14px; }
+.preview-notice { display: flex; gap: 10px; align-items: flex-start; margin: -12px 0 22px; padding: 12px; border: 1px solid #f1dfad; border-radius: 10px; color: #74623a; background: #fff9e9; font-size: 11px; line-height: 1.6; }
+.preview-notice svg { flex: 0 0 auto; width: 15px; color: #aa7a12; }
+.preview-notice strong { color: #5e4d27; }
 .role-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 5px; margin-bottom: 27px; background: #f5f6fa; border-radius: 12px; }
 .role-tab { border: 0; border-radius: 9px; padding: 11px 8px; background: transparent; color: #7d8497; font-size: 13px; font-weight: 600; transition: .18s ease; }
 .role-tab.active { color: var(--purple); background: #fff; box-shadow: 0 2px 8px #20244212; }
@@ -101,6 +104,8 @@ button { cursor: pointer; }
 }
 .primary-btn { color: #fff; background: var(--purple); box-shadow: 0 5px 12px #6959e82b; }
 .primary-btn:hover { background: #5748d8; transform: translateY(-1px); }
+.primary-btn:disabled { cursor: not-allowed; opacity: .6; transform: none; }
+.field input:disabled { cursor: not-allowed; background: #f8f8fb; }
 .primary-btn.full { width: 100%; padding: 14px; font-size: 13px; }
 .secondary-btn { color: var(--purple); background: var(--purple-soft); }
 .secondary-btn:hover { background: #e6e2ff; }

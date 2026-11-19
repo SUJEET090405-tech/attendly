@@ -51,6 +51,8 @@ Set `PORT`, `HOST`, or `DB_PATH` to override the local defaults. The default hos
 
 Vercel hosts the static frontend; Railway runs the API and SQLite database. Deploy the Railway service first, then configure the Vercel frontend with its public API origin.
 
+To deploy a Vercel-only UI preview without a backend, set `ATTENDLY_PREVIEW_ONLY=true` for the Vercel build. The preview clearly indicates that login and attendance features are disabled. Connect a persistent API/database before using the app for real records.
+
 1. Deploy the repository root to Railway using `railway.json`.
 2. Attach a persistent Railway volume mounted at `/data`.
 3. Before the first production start, configure Railway variables:
@@ -62,7 +64,7 @@ Vercel hosts the static frontend; Railway runs the API and SQLite database. Depl
 4. Generate a public Railway domain and set the Vercel project’s `ATTENDLY_API_BASE` to that HTTPS origin, with no path or trailing slash.
 5. After Vercel assigns its domain, set Railway’s `ATTENDLY_FRONTEND_ORIGINS` to that exact origin and redeploy the backend.
 
-The Vercel build fails if `ATTENDLY_API_BASE` is missing. Production database initialization also fails if the three account passwords are missing or shorter than 12 characters. Secrets belong in the hosting providers’ environment-variable settings, never in source control or chat.
+The Vercel build fails if `ATTENDLY_API_BASE` is missing, unless `ATTENDLY_PREVIEW_ONLY=true` is set for a UI-only preview. Production database initialization also fails if the three account passwords are missing or shorter than 12 characters. Secrets belong in the hosting providers’ environment-variable settings, never in source control or chat.
 
 ## Production note
 

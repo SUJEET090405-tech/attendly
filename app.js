@@ -21,6 +21,7 @@ const todayISO = () => new Date().toISOString().slice(0, 10);
 const initials = (name) => name.split(" ").map((part) => part[0]).slice(0, 2).join("").toUpperCase();
 const API_BASE = String(window.ATTENDLY_API_BASE || "").replace(/\/+$/, "");
 const isProduction = window.ATTENDLY_IS_PRODUCTION === true;
+const isPreviewOnly = window.ATTENDLY_PREVIEW_ONLY === true;
 let data = { students: [], requests: [], sessions: {}, activity: [] };
 let currentUser = null;
 let currentPage = "overview";
@@ -94,24 +95,25 @@ function renderLogin() {
         <div class="login-card">
           <h2>Welcome back</h2>
           <p class="login-subtitle">Sign in to your Attendly workspace.</p>
+          ${isPreviewOnly ? `<div class="preview-notice" role="status">${svg("info")}<span><strong>UI preview only</strong><br>Login, attendance, and OD workflows are disabled until a backend is connected.</span></div>` : ""}
           <div class="role-tabs" role="tablist" aria-label="Choose account type">
             ${["student", "faculty", "admin"].map((role) => `<button class="role-tab ${role === selectedRole ? "active" : ""}" type="button" role="tab" aria-selected="${role === selectedRole}" data-role="${role}">${role[0].toUpperCase() + role.slice(1)}</button>`).join("")}
           </div>
           <form id="login-form">
             <div class="field">
               <label for="username">${selectedRole === "student" ? "Student ID" : "Email address"}</label>
-              <div class="input-wrap">${svg("user")}<input id="username" name="username" autocomplete="username" placeholder="${selectedRole === "student" ? "e.g. STU-2041" : `name@campus.edu`}" required></div>
+              <div class="input-wrap">${svg("user")}<input id="username" name="username" autocomplete="username" placeholder="${selectedRole === "student" ? "e.g. STU-2041" : `name@campus.edu`}" required ${isPreviewOnly ? "disabled" : ""}></div>
             </div>
             <div class="field">
               <label for="password">Password</label>
-              <div class="input-wrap">${svg("lock")}<input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required></div>
+              <div class="input-wrap">${svg("lock")}<input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required ${isPreviewOnly ? "disabled" : ""}></div>
             </div>
             <div class="login-error" id="login-error" aria-live="polite"></div>
-            <button class="primary-btn full" type="submit">Sign in ${svg("arrow")}</button>
+            <button class="primary-btn full" type="submit" ${isPreviewOnly ? "disabled" : ""}>Sign in ${svg("arrow")}</button>
           </form>
-          <div class="demo-hint">${svg("info")}<span>${isProduction
+          ${isPreviewOnly ? "" : `<div class="demo-hint">${svg("info")}<span>${isProduction
             ? "<strong>Institute access</strong><br>Use the account details provided by your campus administrator."
-            : `<strong>Demo access</strong><br>Use <strong>${demoUsername(selectedRole)}</strong> / <strong>attendly</strong>, or enter any student ID shown in the student list.`}</span></div>
+            : `<strong>Demo access</strong><br>Use <strong>${demoUsername(selectedRole)}</strong> / <strong>attendly</strong>, or enter any student ID shown in the student list.`}</span></div>`}
         </div>
       </section>
     </main>`;
@@ -121,6 +123,7 @@ function renderLogin() {
   }));
   document.getElementById("login-form").addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (isPreviewOnly) return;
     const form = new FormData(event.currentTarget);
     const username = String(form.get("username")).trim();
     const password = String(form.get("password")).trim();
@@ -524,6 +527,10 @@ async function submitStudent(event) {
 }
 
 async function initApp() {
+  if (isPreviewOnly) {
+    renderLogin();
+    return;
+  }
   try {
     await apiRequest("/api/auth/me");
     await loadDashboard();

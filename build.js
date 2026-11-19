@@ -3,9 +3,10 @@ const path = require("node:path");
 
 const outputDirectory = path.join(__dirname, "dist");
 const apiBase = (process.env.ATTENDLY_API_BASE || "").trim().replace(/\/+$/, "");
+const previewOnly = process.env.ATTENDLY_PREVIEW_ONLY === "true";
 
-if (process.env.VERCEL && !apiBase) {
-  throw new Error("Set ATTENDLY_API_BASE to the public Railway service URL before deploying to Vercel.");
+if (process.env.VERCEL && !apiBase && !previewOnly) {
+  throw new Error("Set ATTENDLY_API_BASE to the public backend URL, or set ATTENDLY_PREVIEW_ONLY=true for a UI-only preview.");
 }
 if (apiBase && !/^https:\/\/[^/]+$/i.test(apiBase)) {
   throw new Error("ATTENDLY_API_BASE must be an HTTPS origin without a path.");
@@ -18,5 +19,5 @@ for (const filename of ["index.html", "app.js", "styles.css"]) {
 }
 fs.writeFileSync(
   path.join(outputDirectory, "config.js"),
-  `window.ATTENDLY_API_BASE = ${JSON.stringify(apiBase)};\nwindow.ATTENDLY_IS_PRODUCTION = true;\n`
+  `window.ATTENDLY_API_BASE = ${JSON.stringify(apiBase)};\nwindow.ATTENDLY_IS_PRODUCTION = true;\nwindow.ATTENDLY_PREVIEW_ONLY = ${previewOnly};\n`
 );
