@@ -1,0 +1,8 @@
+.git
+.env
+data/
+node_modules/
+railway.json
+server.js
+server.test.js
+database.js
